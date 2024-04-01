@@ -1,0 +1,69 @@
+/*-- scss:defaults --*/
+
+$body-bg: #dfe7fd;
+$body-color: #cdb4db;
+$link-color: #283618;
+$code-color: #ccff33;
+
+$theme-green: #007f5f;
+$theme-gyellow: #80b918;
+$text-muted: #ff6700;
+$link-color: #226ce0;
+$link-color-hover: #ff0f0f;
+$selection-bg: #ff0fc3;
+$selection-color: #05382f;
+$light-bg-text-color: #a5be00;
+
+
+@import url('https://fonts.googleapis.com/css2?family=Butterfly+Kids&family=Dancing+Script:wght@400..700&family=Fira+Code:wght@300..700&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Sacramento&display=swap');
+
+
+$font-family-sans-serif: "Open Sans", sans-serif;
+$font-family-monospace: "Fira Code", monospace;
+
+$presentation-font-size-root: 2.5rem;
+$presentation-line-height: 1;
+$presentation-h2-font-size: 3rem;
+$presentation-heading-font: "Raleway", sans-serif;
+$presentation-heading-color: #1a9d25;
+$presentation-heading-line-height: 1.5;
+$presentation-heading-text-transform: full-size-kana;
+$presentation-heading-text-shadow: 60px;
+
+$code-block-bg: #5dec9a;
+$code-block-border-color: #8c49d7;
+$code-block-font-size: 2.5rem;
+
+$code-color: #f52900;
+$code-bg: #bd833e;
+
+$border-color: #e83882;
+
+
+/*-- scss:rules --*/
+
+.reveal .title {
+  /*border: 1pt solid;*/
+  font-size: 4.5rem;
+  font-family: "Dancing Script", cursive;
+}
+.reveal .subtitle {
+  font-size: 4rem;
+  font-family: "Sacramento", cursive;
+   color: #8338ec;
+}
+.reveal .quarto-title-author-name {
+  font-size: 3.5rem;
+  font-family: "Sacramento", cursive;
+  color: #8338ec;
+}
+
+.reveal .reason p {
+  font-family: "Dancing Script", cursive;
+  align-content: center;
+  color: #4361ee;
+}
+
+

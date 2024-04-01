@@ -1,0 +1,609 @@
+---
+title: "ggplot for data analysis"
+subtitle: "Getting started with qplot"
+title-slide-attributes: 
+  data-background-image: imgs/pj.jpg
+  data-background-size: cover
+  data-background-opacity: "0.1"
+  data-background-repeat: "no-repeat"
+author: Patiño Jauja, Saturnino
+format:
+  revealjs:
+    # smaller: true
+    menu: 
+      side: left
+      width: wide
+    scrollable: true
+    incremental: true
+    reference-location: document
+    footer: "https://patinoj.github.io/spj/"
+    # logo: "https://tse4.mm.bing.net/th?id=OIP.yDncA-XRfTzWHb8jrjyoiwAAAA&pid=Api&P=0&h=180"
+    theme: style.scss
+    slide-number: c/t
+    show-slide-number: all
+    chalkboard:
+      theme: whiteboard
+editor: visual
+---
+
+## Getting started with qplot
+
+```{r}
+#| echo: true
+#| eval: false
+library(ggplot2)
+library(gganimate)
+library(ggvis)
+library(ggthemes)
+library(tidyverse)
+library(dplyr)
+library(readxl)
+library(haven)
+auto <- read_dta("auto.dta")
+dta_robust <- read_excel("C:/Users/DELL/Downloads/QmdPDF/dta_robust.xlsx", sheet = "THESIS_SN_DTA_SOLICITADA")
+```
+
+## Examples
+
+```{r}
+#| echo: true
+#| eval: false
+qplot(t,pbi,data = dta_robust)
+ggsave("qp0.png")
+```
+
+![](imgs/qp0.png){fig-align="center"}
+
+## Taking logarithms
+
+```{r}
+#| echo: true
+#| eval: false
+qplot(log(pbi),log(pea),data = dta_robust,ylab = "PEA",xlab = "PBi")
+ggsave("qp1.png")
+```
+
+![](imgs/qp1.png){fig-align="center"}
+
+## Arithmetic operations
+
+```{r}
+#| echo: true
+#| eval: false
+p1 <- qplot(t,pbi/pea,ylab = "Y/L",xlab = "T",colour=I("red"))
+p2 <- qplot(t,pbi/pea,ylab = "Y/L",xlab = "T",geom = "path",colour=I("orange"))
+p3 <- qplot(t,pbi/pea,ylab = "Y/L",xlab = "T",geom = c("line","point"))
+p4 <- qplot(t,pbi/pea,ylab = "Y/L",xlab = "T",geom = c("line","smooth"))
+p5 <- qplot(pbi,inv,geom = "boxplot")
+p6 <- qplot(pbi,inv,geom = c("dotplot"),stackdir = "center", binaxis = "y")
+p7 <- qplot(pbi,inv,geom = c("violin"),trim= FALSE)
+merged_plot <- grid.arrange(p1, p2, p3,p4,p5,p6,p7, nrow = 3,ncol=3)
+ggsave("pm1.png", merged_plot)
+```
+
+## Graphics
+
+![](imgs/pm1.png){fig-align="center"}
+
+## Bar graph
+
+```{r}
+#| echo: true
+#| eval: false
+h1 <- qplot(pbi,geom = "histogram",colour=I("magenta"))
+h2 <- qplot(inv,geom = "density")
+h3 <- qplot(pea,geom = c("histogram","density"))
+h4 <- qplot(pea,geom = "density",xlab = "PEA",ylab = "Density",main = "Density plot of PEA")
+m_p <- grid.arrange(h1, h2, h3, h4, nrow=2,ncol=2)
+ggsave("mp2.png",m_p)
+```
+
+## Graphics
+
+![](imgs/mp2.png){fig-align="center"}
+
+## Shape and other aesthetic attributes
+
+```{r}
+#| echo: true
+#| eval: false
+s1 <- qplot(inv, pbi, data= dta_robust ,alpha=I(1/10))
+s2 <- qplot(inv, pbi, data= dta_robust ,alpha=I(1/15))
+s3 <- qplot(inv, pbi, data= dta_robust ,alpha=I(1/20))
+pm3 <- grid.arrange(s1, s2, s3, nrow= 1, ncol=3)
+ggsave("mp4.png",pm3)
+```
+
+## Graphics
+
+![](imgs/mp4.png){fig-align="center"}
+
+## Method "lm"
+
+```{r}
+#| echo: true
+#| eval: false
+library(splines)
+lm1 <- qplot(pbi,pea,geom = c("point","smooth"),method= "lm")
+lm2 <- qplot(pbi,pea, geom = c("point","smooth"), method= "lm", formula = pbi~pea)
+lm_m <- grid.arrange(lm1, lm2, nrow= 1, ncol= 2)
+ggsave("lm.jpg",lm_m)
+```
+
+## Graphics
+
+![](imgs/lm.jpg){fig-align="center"}
+
+## Categorical variables
+
+```{r}
+#| echo: true
+#| eval: false
+library(labelled)
+library(forcats)
+auto$foreign <- factor(auto$foreign, labels = c("Domestic", "Foreign"))
+levels(auto$foreign) <- c("Domestic", "Foreign")
+```
+
+## Graphics
+
+```{r}
+#| echo: true
+#| eval: false
+qplot(price, mpg, data = auto, colour= foreign)
+qplot(price,mpg, data = auto, shape= foreign)
+qplot(foreign,price, data = auto, geom = "jitter", alpha=I(1/5))
+qplot(foreign,price, data = auto, geom = "jitter", alpha=I(1/10))
+qplot(foreign,price, data = auto, geom = "jitter", alpha=I(1/20))
+```
+
+## To compare the distributions
+
+```{r}
+#| echo: true
+#| eval: false
+qplot(price,data = auto, geom = "histogram", fill= foreign)
+qplot(price,data = auto, geom = "density", colour= foreign)
+qplot(foreign, data = auto, geom = "bar")
+qplot(foreign, data = auto, geom = "bar", weight = price) +
+scale_y_continuous("price")
+```
+
+## Time series
+
+```{r}
+#| echo: true
+#| eval: false
+qplot(t,pbi,data = dta_robust,geom = "line")
+qplot(t,pbi,data = dta_robust,geom = c("point","path"))
+```
+
+## Faceting
+
+```{r}
+#| echo: true
+#| eval: false
+qplot(mpg,data = auto,facets = foreign~.,geom = "histogram", binwidth = 0.1, xlim = c(0, 21.30))
+qplot(mpg,..density..,data = auto,facets = foreign~.,geom = "histogram", binwidth = 0.1, xlim = c(0, 21.30))
+qplot(t,inv,data = dta_robust,xlab = "Time",ylab = "I",main = "Investment chart",xlim = c(0,mean(dta_robust$t)))
+qplot(t,pbi,data = dta_robust,xlab = "T",ylab = "Y",main = "Gross domestic product",ylim = c(0,mean(dta_robust$pbi)))
+```
+
+## Scatterplot
+
+```{r}
+#| echo: true
+#| eval: false
+qplot(price,headroom,data = auto,colour=factor(foreign))
+qplot(price,headroom,data = auto,facets = .~foreign)+geom_smooth()
+p <- qplot(price,headroom,data = auto,colour= factor(foreign))
+summary(p)
+```
+
+## Layers
+
+```{r}
+#| echo: true
+#| eval: false
+(p <- ggplot(data = auto,aes(price,headroom,colour= foreign))+geom_point())
+(p <- ggplot(data = auto,aes(price,headroom,colour= foreign))+geom_smooth())
+(p <- ggplot(data = auto,aes(price,headroom,colour= foreign))+geom_smooth()+geom_point())
+```
+
+## layers with qplot
+
+```{r}
+#| echo: true
+#| eval: false
+(p <- ggplot(data = auto,aes(price,headroom,colour=foreign))+geom_point())
+auto <- transform(auto, headroom= headroom^2)
+p %+% auto
+
+(p <- ggplot(data = auto,aes(price,headroom,colour=sqrt(rep78)))+geom_point())
+```
+
+## The default mappings
+
+```{r}
+#| echo: true
+#| eval: false
+p <- ggplot(data = auto,aes(price,headroom))
+p+geom_point()
+```
+
+## Setting vs. mapping
+
+```{r}
+#| echo: true
+#| eval: false
+p <- ggplot(data = auto,aes(price,headroom))
+p + geom_point(colour = "darkblue")
+p+geom_point(aes(colour= "magenta"))
+```
+
+## Multiple groups, one aesthetic.
+
+```{r}
+#| echo: true
+#| eval: false
+(p <- ggplot(auto,aes(foreign,headroom,group= rep78))+geom_line())
+p + geom_smooth(aes(group = foreign), method="lm", se = F)
+p + geom_smooth(aes(group = 1), method="lm", size = 2, se = F)
+```
+
+## Boxplot
+
+```{r}
+#| echo: true
+#| eval: false
+(b <- ggplot(data = auto,aes(foreign,price))+geom_boxplot())
+```
+
+## statistical transformatio
+
+```{r}
+#| echo: true
+#| eval: false
+ggplot(data = auto,aes(rep78))+geom_histogram(aes(y = ..density..), binwidth = 0.1)
+# qplot(price, ..density.., data = auto, geom="histogram",binwidth = 0.1)
+```
+
+# qvis and ggvis
+
+## A basic scatter plot
+
+```{r}
+#| echo: true
+#| eval: false
+(g1 <- ggvis(data = auto, x = ~price, y = ~rep78) %>% 
+  layer_points())
+(g2 <- auto %>%
+  ggvis(x = ~price, y = ~rep78) %>%
+  layer_points(size := 25, shape := "diamond", stroke := "red", fill := NA))
+```
+
+## Graphics
+
+::: columns
+::: {.column width="50%"}
+![](imgs/g1.svg){fig-align="center"}
+:::
+
+::: {.column width="50%"}
+![](imgs/g2.svg){fig-align="center"}
+:::
+:::
+
+## Bar graphs
+
+```{r}
+#| echo: true
+#| eval: false
+(g3 <- auto %>%
+  ggvis(x = ~rep78, y = ~price, y2 = 0) %>%
+  layer_rects(width := 10))
+
+(g4 <- auto %>%
+  ggvis(x = ~price - 100, x2 = ~price + 10, y = ~rep78, y2 = 0) %>%
+  layer_rects() %>%
+  add_axis("x", title = "Price"))
+```
+
+## Graphics
+
+::: columns
+::: {.column width="50%"}
+![](imgs/g3.svg){fig-align= "center"}
+:::
+
+::: {.column width="50%"}
+![](imgs/g4.svg){fig-align= "center"}
+:::
+:::
+
+## Line graphs
+
+```{r}
+#| echo: true
+#| eval: false
+(g5 <- dta_robust %>% 
+  ggvis(x=~t,y=~pbi) %>% layer_lines())
+(g6 <- dta_robust %>% 
+  ggvis(x=~t,y=~pbi) %>% layer_lines() %>% 
+  layer_points())
+
+```
+
+## Graphics
+
+::: columns
+::: {.column width="50%"}
+![](imgs/g5.svg){fig-align= "center"}
+:::
+
+::: {.column width="50%"}
+![](imgs/g6.svg){fig-align="center"}
+:::
+:::
+
+## Histograms
+
+```{r}
+#| echo: true
+#| eval: false
+
+(g7 <- auto %>% ggvis(x=~price) %>% 
+  layer_histograms())
+
+(g8 <- auto %>%
+  ggvis(x = ~rep78, fill := "#8338ec") %>%
+  layer_histograms(width = 0.25) %>%  # 'binwidth' is deprecated, use 'width'
+  add_axis("x", title = "rep78") %>%
+  add_axis("y", title = "Count"))
+```
+
+## Graphics
+
+::: columns
+::: {.column widht="50%"}
+![](imgs/g7.svg){fig-align="center"}
+:::
+
+::: {.column widht="50%"}
+![](imgs/g8.svg){fig-align="center"}
+:::
+:::
+
+## Regression lines
+
+```{r}
+#| echo: true
+#| eval: false
+(g9 <- auto %>% 
+  ggvis(x=~price,y=~headroom) %>% 
+  layer_points() %>% 
+  layer_smooths())
+(g10 <- auto %>% 
+  ggvis(x=~price,y=~headroom) %>% 
+  layer_points() %>% 
+  layer_model_predictions(model = "lm", se = TRUE))
+```
+
+## Graphics
+
+::: columns
+::: {.column widht="50%"}
+![](imgs/g9.svg){fig-align="center"}
+:::
+
+::: {.column widht="50%"}
+![](imgs/g10.svg){fig-align="center"}
+:::
+:::
+
+## Scatter plots with grouping
+
+```{r}
+#| echo: true
+#| eval: false
+
+(g11 <- auto %>%
+  ggvis(x = ~price, y = ~rep78) %>%
+  layer_points(fill := ~factor(foreign)))
+```
+
+## Graphics
+
+![](imgs/g11.svg){fig-align="center"}
+
+# Axes and Legends
+
+## Common properties
+
+```{r}
+#| echo: true
+#| eval: false
+(g12 <- auto %>% ggvis(~price, ~rep78) %>%
+  layer_points() %>%
+  add_axis("x", properties = axis_props(
+    axis = list(stroke = "red", strokeWidth = 5),
+    grid = list(stroke = "blue"),
+    ticks = list(stroke = "blue", strokeWidth = 2),
+    labels = list(angle = 45, align = "left", fontSize = 20)
+  )))
+```
+
+## Graphics
+
+![](imgs/g12.svg){fig-align="center"}
+
+## Axis
+
+```{r}
+#| echo: true
+#| eval: false
+(g13 <- auto %>% ggvis(~price, ~mpg) %>% layer_points())
+(g14 <- auto %>% ggvis(~price, ~mpg) %>% layer_points() %>%
+  add_axis("x", title = "Price") %>%
+  add_axis("y", title = "Mpg"))
+(g15 <- auto %>% ggvis(~price, ~rep78) %>%
+  layer_points() %>%
+  add_axis("x", title = "Price", title_offset = 50) %>%
+  add_axis("y", title = "rep78", title_offset = 50))
+
+```
+
+## Graphics
+
+::: columns
+::: {.column width="33.3%"}
+![](imgs/g13.svg){fig-align="center"}
+:::
+
+::: {.column width="33.3%"}
+![](imgs/g14.svg){fig-align="center"}
+:::
+
+::: {.column width="33.3%"}
+![](imgs/g15.svg){fig-align="center"}
+:::
+:::
+
+## Tick sizes and padding
+
+```{r}
+#| echo: true
+#| eval: false
+(g16 <- auto %>% ggvis(~price, ~mpg) %>%
+  layer_points() %>%
+  add_axis("x", subdivide = 9, values = 1:6) %>%
+  add_axis("y", subdivide = 1, values = seq(10, 34, by = 2)))
+```
+
+## Graphics
+
+![](imgs/g16.svg){fig-align= "center"}
+
+## Orientation
+
+```{r}
+#| echo: true
+#| eval: false
+(g17 <- auto %>% ggvis(~price, ~rep78) %>%
+  layer_points() %>%
+  add_axis("x", orient = "top") %>%
+  add_axis("y", orient = "right"))
+
+(g18 <- auto %>% ggvis(~price, ~rep78) %>%
+  layer_points() %>%
+  add_axis("x", orient = "bottom") %>%
+  add_axis("x", orient = "top"))
+
+(g19 <- dta_robust %>% ggvis(~pbi, ~pea) %>%
+  layer_points() %>%
+  add_axis("x") %>%
+  add_axis("x", offset = 40, grid = FALSE))
+```
+
+## Graphics
+
+::: columns
+::: {.column width="33.3%"}
+![](imgs/g17.svg){fig-align="center"}
+:::
+
+::: {.column width="33.3%"}
+![](imgs/g18.svg){fig-align="center"}
+:::
+
+::: {.column width="33.3%"}
+![](imgs/g19.svg){fig-align="center"}
+:::
+:::
+
+## Combining legends
+
+```{r}
+#| echo: true
+#| eval: false
+auto <- auto %>% dplyr::mutate(foreign = ordered(auto$foreign))
+(g20 <- auto %>% ggvis(~mpg, ~price, size = ~foreign, fill = ~foreign) %>% layer_points())
+(g21 <- auto%>% ggvis(~mpg, ~price, size = ~foreign, fill = ~foreign) %>% layer_points() %>%
+  add_legend(c("size", "fill")))
+```
+
+## Graphics
+
+::: columns
+::: {.column width="50%"}
+![](imgs/g20.svg){fig-align="center"}
+:::
+
+::: {.column width="50%"}
+![](imgs/g21.svg){fig-align="center"}
+:::
+:::
+
+## Adding a layer to a plot
+
+```{r}
+#| echo: true
+#| eval: false
+(g22 <- auto %>% ggvis(x = ~price, y = ~rep78, stroke := "orange") %>% layer_points())
+```
+
+## Graphics
+
+![](imgs/g22.svg)
+
+## ggthemes
+
+```{r}
+#| echo: true
+#| eval: false
+
+(p <- ggplot(auto,aes(price,rep78,colour= foreign))+geom_point())
+(p_t <- p + theme_base() + ggtitle("theme_base()"))
+(p_t <- p + theme_calc() + ggtitle("theme_calc()"))
+(p_t <- p + theme_clean() + ggtitle("theme_clean()"))
+(p_t <- p + theme_economist() + ggtitle("theme_economist()"))
+(p_t <- p + theme_economist_white() + ggtitle("theme_economist_white()"))
+(p_t <- p + theme_excel() + ggtitle("theme_excel()"))
+
+```
+
+## Various themes
+
+```{r}
+#| echo: true
+#| eval: false
+
+(p_t <- p + theme_excel_new() + ggtitle("theme_excel_new()"))
+(p_t <- p + theme_few() + ggtitle("theme_few()"))
+(p_t <- p + theme_foundation() + ggtitle("theme_foundation()"))
+(p_t <- p + theme_solarized() + ggtitle("theme_solarized()"))
+(p_t <- p + theme_stata() + ggtitle("theme_stata()"))
+
+```
+
+# gganimate
+
+```{r}
+#| echo: true
+#| eval: false
+(p <- ggplot(auto,aes(price,rep78))+geom_point())
+(a <- p + 
+  transition_states(foreign,
+                    transition_length = 2,
+                    state_length = 1))
+```
+
+## End{.center}
+
+<div class= "reason">
+  <p>"Embrace progress over perfection, and strive to be a little better than yesterday."</p>
+</div>
+
+::: footer
+[Personal WebSite](https://patinoj.github.io/spj/ "Patino Jauja, Saturnino")
+:::
